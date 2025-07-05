@@ -49,7 +49,7 @@ export default function Header() {
                     alt={settings.storeName}
                     width={24}
                     height={24}
-                    className="sm:w-8 sm:h-8 brightness-0 invert"
+                    className="sm:w-8 sm:h-8"
                   />
                 </div>
               </div>

@@ -40,7 +40,13 @@ export default function Footer() {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-40"></div>
                 <div className="relative bg-gradient-to-r from-blue-500 to-purple-500 p-3 rounded-xl">
-                  <Image src="/logo.png" alt={settings.storeName} width={32} height={32} className="brightness-0 invert" />
+                  <Image
+                    src="/logo.png"
+                    alt={settings.storeName}
+                    width={24}
+                    height={24}
+                    className="sm:w-8 sm:h-8"
+                  />
                 </div>
               </div>
               <div>
