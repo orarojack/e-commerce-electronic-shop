@@ -13,7 +13,7 @@ export default function ContactPage() {
   const { settings } = useSettings()
   const sendWhatsAppMessage = () => {
     const message = `Hi! I'd like to get in touch with ${settings.storeName}.`
-    const whatsappUrl = `https://wa.me/${settings.contactPhone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`
+    const whatsappUrl = `https://wa.me/254703781668?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, "_blank")
   }
 

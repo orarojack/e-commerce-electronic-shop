@@ -103,11 +103,6 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-1 sm:space-x-2">
-            {/* WhatsApp number (desktop only) */}
-            <div className="hidden lg:flex items-center space-x-2 mr-2">
-              <MessageCircle className="h-5 w-5 text-green-500" />
-              <a href="https://wa.me/254703781668" target="_blank" rel="noopener noreferrer" className="text-green-600 underline font-semibold hover:text-green-700">+254 703 781 668</a>
-            </div>
             {/* Mobile Search Toggle */}
             <Button
               variant="ghost"
@@ -205,31 +200,26 @@ export default function Header() {
                     </Button>
                   </Link>
                 </motion.div>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Link href="/login?admin=true">
-                    <Button variant="outline" size="sm" className="text-xs px-2 py-1 border-gray-300 hover:bg-gray-50">
-                      Admin
-                    </Button>
-                  </Link>
-                </motion.div>
               </div>
             )}
 
             {/* Cart */}
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/cart">
-                <Button variant="ghost" className="relative p-2 hover:bg-gray-100 rounded-xl">
-                  <ShoppingCart className="h-5 w-5 text-gray-600" />
-                  {totalItems > 0 && (
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-1 -right-1">
-                      <Badge className="h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center p-0 text-xs bg-gradient-to-r from-orange-500 to-red-500 border-2 border-white shadow-lg">
-                        {totalItems > 99 ? "99+" : totalItems}
-                      </Badge>
-                    </motion.div>
-                  )}
-                </Button>
-              </Link>
-            </motion.div>
+            {user?.role !== "admin" && (
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href="/cart">
+                  <Button variant="ghost" className="relative p-2 hover:bg-gray-100 rounded-xl">
+                    <ShoppingCart className="h-5 w-5 text-gray-600" />
+                    {totalItems > 0 && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute -top-1 -right-1">
+                        <Badge className="h-5 w-5 sm:h-6 sm:w-6 flex items-center justify-center p-0 text-xs bg-gradient-to-r from-orange-500 to-red-500 border-2 border-white shadow-lg">
+                          {totalItems > 99 ? "99+" : totalItems}
+                        </Badge>
+                      </motion.div>
+                    )}
+                  </Button>
+                </Link>
+              </motion.div>
+            )}
 
             {/* Mobile Menu Toggle */}
             <Button

@@ -35,7 +35,7 @@ const defaultSettings: StoreSettings = {
   storeName: "Mash Electronics",
   storeDescription: "Your trusted source for quality electronics in Kenya",
   contactEmail: "info@mashelectronics.co.ke",
-  contactPhone: "+254700123456",
+  contactPhone: "+254703781668",
   address: "Nairobi, Kenya",
   website: "https://mashelectronics.co.ke",
   currency: "KSH",
