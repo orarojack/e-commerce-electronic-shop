@@ -28,6 +28,7 @@ import {
   Phone,
   Mail,
   MapPin,
+  Printer,
 } from "lucide-react"
 import { supabase, type OrderWithItems } from "@/lib/supabase"
 import { useSettings } from "@/lib/settings-context"
@@ -453,6 +454,145 @@ export default function AdminOrdersPage() {
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-6">
+              {/* Action Buttons */}
+              <div className="flex gap-3 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    // Modern printable receipt
+                    const printWindow = window.open('', '_blank', 'width=900,height=700')
+                    if (printWindow) {
+                      printWindow.document.write('<html><head><title>Receipt</title>')
+                      printWindow.document.write(`
+                        <style>
+                          body { font-family: Inter, Arial, sans-serif; background: #f8fafc; color: #222; padding: 0; margin: 0; }
+                          .receipt-container { max-width: 700px; margin: 32px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px #0001; padding: 40px 32px; }
+                          .header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 24px; }
+                          .logo { width: 56px; height: 56px; border-radius: 12px; object-fit: contain; background: #f3f4f6; }
+                          .store-info { font-size: 1.1rem; }
+                          .section-title { color: #6366f1; font-weight: 700; margin-top: 32px; margin-bottom: 8px; font-size: 1.1rem; }
+                          .info-table { width: 100%; margin-bottom: 16px; }
+                          .info-table td { padding: 2px 0; }
+                          .order-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+                          .order-table th, .order-table td { border: 1px solid #e5e7eb; padding: 10px; text-align: left; }
+                          .order-table th { background: #f3f4f6; }
+                          .order-table tfoot td { font-weight: bold; background: #f9fafb; }
+                          .badge { display: inline-block; padding: 4px 14px; border-radius: 999px; font-size: 0.95em; font-weight: 600; margin-left: 8px; }
+                          .badge-paid { background: #dcfce7; color: #16a34a; }
+                          .badge-unpaid { background: #fee2e2; color: #b91c1c; }
+                          .print-btn { margin-bottom: 24px; padding: 10px 24px; font-size: 16px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; }
+                          @media print { .print-btn { display: none; } .receipt-container { box-shadow: none; margin: 0; } }
+                        </style>
+                      `)
+                      printWindow.document.write('</head><body>')
+                      printWindow.document.write('<div class="receipt-container">')
+                      printWindow.document.write('<button class="print-btn" onclick="window.print()">Print Receipt</button>')
+                      printWindow.document.write('<div class="header">')
+                      printWindow.document.write('<img src="/logo.png" class="logo" alt="Logo" />')
+                      printWindow.document.write(`<div class="store-info"><strong>${settings.storeName}</strong><br/>${settings.address}<br/>${settings.contactEmail}<br/>${settings.contactPhone}<br/>${settings.website || ''}</div>`)
+                      printWindow.document.write('</div>')
+                      printWindow.document.write('<div style="display:flex;justify-content:space-between;align-items:center;">')
+                      printWindow.document.write(`<div><span class="section-title">Receipt</span><br/><span style="color:#64748b;">Order #${selectedOrder.id.slice(0,8)}</span></div>`)
+                      printWindow.document.write(`<div><span class="badge ${selectedOrder.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${selectedOrder.payment_status === 'paid' ? 'PAID' : 'UNPAID'}</span></div>`)
+                      printWindow.document.write('</div>')
+                      printWindow.document.write('<table class="info-table"><tr><td><b>Date:</b></td><td>' + new Date(selectedOrder.created_at).toLocaleString() + '</td></tr>')
+                      printWindow.document.write('<tr><td><b>Payment Method:</b></td><td>' + selectedOrder.payment_method + '</td></tr>')
+                      printWindow.document.write('<tr><td><b>Order Status:</b></td><td>' + selectedOrder.order_status + '</td></tr></table>')
+                      printWindow.document.write('<span class="section-title">Customer</span>')
+                      printWindow.document.write('<table class="info-table">')
+                      printWindow.document.write('<tr><td><b>Name:</b></td><td>' + selectedOrder.customer_name + '</td></tr>')
+                      printWindow.document.write('<tr><td><b>Email:</b></td><td>' + selectedOrder.customer_email + '</td></tr>')
+                      printWindow.document.write('<tr><td><b>Phone:</b></td><td>' + selectedOrder.customer_phone + '</td></tr>')
+                      printWindow.document.write('<tr><td><b>Address:</b></td><td>' + selectedOrder.shipping_address + '</td></tr>')
+                      printWindow.document.write('</table>')
+                      printWindow.document.write('<span class="section-title">Order Items</span>')
+                      printWindow.document.write('<table class="order-table"><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead><tbody>')
+                      selectedOrder.order_items.forEach(item => {
+                        printWindow.document.write(`<tr><td>${item.products.name}</td><td>${item.quantity}</td><td>${formatCurrency(item.price)}</td><td>${formatCurrency(item.price * item.quantity)}</td></tr>`)
+                      })
+                      printWindow.document.write('</tbody><tfoot>')
+                      printWindow.document.write('<tr><td colspan="3">Total</td><td>' + formatCurrency(selectedOrder.total_amount) + '</td></tr>')
+                      printWindow.document.write('</tfoot></table>')
+                      printWindow.document.write('<p style="margin-top:32px;font-size:1.1em;color:#6366f1;"><b>Thank you for shopping with us!</b></p>')
+                      printWindow.document.write('<p style="color:#64748b;">For support, contact us at ' + settings.contactEmail + ' or ' + settings.contactPhone + '.</p>')
+                      printWindow.document.write('</div>')
+                      printWindow.document.write('</body></html>')
+                      printWindow.document.close()
+                    }
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Printer className="h-4 w-4" /> Print Receipt
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    // Modern printable invoice
+                    const invoiceWindow = window.open('', '_blank', 'width=900,height=700')
+                    if (invoiceWindow) {
+                      invoiceWindow.document.write('<html><head><title>Invoice</title>')
+                      invoiceWindow.document.write(`
+                        <style>
+                          body { font-family: Inter, Arial, sans-serif; background: #f8fafc; color: #222; padding: 0; margin: 0; }
+                          .invoice-container { max-width: 700px; margin: 32px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px #0001; padding: 40px 32px; }
+                          .header { display: flex; align-items: center; gap: 20px; border-bottom: 2px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 24px; }
+                          .logo { width: 56px; height: 56px; border-radius: 12px; object-fit: contain; background: #f3f4f6; }
+                          .store-info { font-size: 1.1rem; }
+                          .section-title { color: #6366f1; font-weight: 700; margin-top: 32px; margin-bottom: 8px; font-size: 1.1rem; }
+                          .info-table { width: 100%; margin-bottom: 16px; }
+                          .info-table td { padding: 2px 0; }
+                          .order-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+                          .order-table th, .order-table td { border: 1px solid #e5e7eb; padding: 10px; text-align: left; }
+                          .order-table th { background: #f3f4f6; }
+                          .order-table tfoot td { font-weight: bold; background: #f9fafb; }
+                          .badge { display: inline-block; padding: 4px 14px; border-radius: 999px; font-size: 0.95em; font-weight: 600; margin-left: 8px; }
+                          .badge-paid { background: #dcfce7; color: #16a34a; }
+                          .badge-unpaid { background: #fee2e2; color: #b91c1c; }
+                          .print-btn { margin-bottom: 24px; padding: 10px 24px; font-size: 16px; background: #6366f1; color: white; border: none; border-radius: 6px; cursor: pointer; }
+                          @media print { .print-btn { display: none; } .invoice-container { box-shadow: none; margin: 0; } }
+                        </style>
+                      `)
+                      invoiceWindow.document.write('</head><body>')
+                      invoiceWindow.document.write('<div class="invoice-container">')
+                      invoiceWindow.document.write('<button class="print-btn" onclick="window.print()">Print Invoice</button>')
+                      invoiceWindow.document.write('<div class="header">')
+                      invoiceWindow.document.write('<img src="/logo.png" class="logo" alt="Logo" />')
+                      invoiceWindow.document.write(`<div class="store-info"><strong>${settings.storeName}</strong><br/>${settings.address}<br/>${settings.contactEmail}<br/>${settings.contactPhone}<br/>${settings.website || ''}</div>`)
+                      invoiceWindow.document.write('</div>')
+                      invoiceWindow.document.write('<div style="display:flex;justify-content:space-between;align-items:center;">')
+                      invoiceWindow.document.write(`<div><span class="section-title">Invoice</span><br/><span style="color:#64748b;">Order #${selectedOrder.id.slice(0,8)}</span></div>`)
+                      invoiceWindow.document.write(`<div><span class="badge ${selectedOrder.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}">${selectedOrder.payment_status === 'paid' ? 'PAID' : 'UNPAID'}</span></div>`)
+                      invoiceWindow.document.write('</div>')
+                      invoiceWindow.document.write('<table class="info-table"><tr><td><b>Date:</b></td><td>' + new Date(selectedOrder.created_at).toLocaleString() + '</td></tr>')
+                      invoiceWindow.document.write('<tr><td><b>Payment Method:</b></td><td>' + selectedOrder.payment_method + '</td></tr>')
+                      invoiceWindow.document.write('<tr><td><b>Order Status:</b></td><td>' + selectedOrder.order_status + '</td></tr></table>')
+                      invoiceWindow.document.write('<span class="section-title">Customer</span>')
+                      invoiceWindow.document.write('<table class="info-table">')
+                      invoiceWindow.document.write('<tr><td><b>Name:</b></td><td>' + selectedOrder.customer_name + '</td></tr>')
+                      invoiceWindow.document.write('<tr><td><b>Email:</b></td><td>' + selectedOrder.customer_email + '</td></tr>')
+                      invoiceWindow.document.write('<tr><td><b>Phone:</b></td><td>' + selectedOrder.customer_phone + '</td></tr>')
+                      invoiceWindow.document.write('<tr><td><b>Address:</b></td><td>' + selectedOrder.shipping_address + '</td></tr>')
+                      invoiceWindow.document.write('</table>')
+                      invoiceWindow.document.write('<span class="section-title">Order Items</span>')
+                      invoiceWindow.document.write('<table class="order-table"><thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead><tbody>')
+                      selectedOrder.order_items.forEach(item => {
+                        invoiceWindow.document.write(`<tr><td>${item.products.name}</td><td>${item.quantity}</td><td>${formatCurrency(item.price)}</td><td>${formatCurrency(item.price * item.quantity)}</td></tr>`)
+                      })
+                      invoiceWindow.document.write('</tbody><tfoot>')
+                      invoiceWindow.document.write('<tr><td colspan="3">Total</td><td>' + formatCurrency(selectedOrder.total_amount) + '</td></tr>')
+                      invoiceWindow.document.write('</tfoot></table>')
+                      invoiceWindow.document.write('<p style="margin-top:32px;font-size:1.1em;color:#6366f1;"><b>Thank you for your business!</b></p>')
+                      invoiceWindow.document.write('<p style="color:#64748b;">For support, contact us at ' + settings.contactEmail + ' or ' + settings.contactPhone + '.</p>')
+                      invoiceWindow.document.write('</div>')
+                      invoiceWindow.document.write('</body></html>')
+                      invoiceWindow.document.close()
+                    }
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Mail className="h-4 w-4" /> Send Invoice
+                </Button>
+              </div>
               {/* Customer Information */}
               <Card>
                 <CardHeader>
