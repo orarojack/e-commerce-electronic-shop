@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { Facebook, Twitter, Instagram, Mail, Phone, MapPin, ArrowRight, Heart } from "lucide-react"
+import { Facebook, Twitter, Instagram, Mail, Phone, MapPin, ArrowRight, Heart, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useSettings } from "@/lib/settings-context"
@@ -158,6 +158,10 @@ export default function Footer() {
                   <span className="text-gray-300">{contact.text}</span>
                 </div>
               ))}
+              <div className="flex items-center space-x-3">
+                <MessageCircle className="h-5 w-5 text-green-400" />
+                <a href="https://wa.me/254703781668" target="_blank" rel="noopener noreferrer" className="text-green-300 underline hover:text-green-500 font-semibold">+254 703 781 668</a>
+              </div>
             </div>
 
             {/* Newsletter */}

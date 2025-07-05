@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
-import { ShoppingCart, User, Search, Menu, LogOut, X, Bell, Heart } from "lucide-react"
+import { ShoppingCart, User, Search, Menu, LogOut, X, Bell, Heart, MessageCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -103,6 +103,11 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center space-x-1 sm:space-x-2">
+            {/* WhatsApp number (desktop only) */}
+            <div className="hidden lg:flex items-center space-x-2 mr-2">
+              <MessageCircle className="h-5 w-5 text-green-500" />
+              <a href="https://wa.me/254703781668" target="_blank" rel="noopener noreferrer" className="text-green-600 underline font-semibold hover:text-green-700">+254 703 781 668</a>
+            </div>
             {/* Mobile Search Toggle */}
             <Button
               variant="ghost"

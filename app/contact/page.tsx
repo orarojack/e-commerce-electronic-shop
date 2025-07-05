@@ -124,6 +124,13 @@ export default function ContactPage() {
                     <p className="text-gray-200">Sunday: 10:00 AM - 6:00 PM</p>
                   </div>
                 </div>
+                <div className="flex items-center space-x-3">
+                  <MessageCircle className="h-5 w-5 text-green-400" />
+                  <div>
+                    <p className="font-medium">WhatsApp</p>
+                    <a href="https://wa.me/254703781668" target="_blank" rel="noopener noreferrer" className="text-green-300 underline hover:text-green-500 font-semibold">+254 703 781 668</a>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
