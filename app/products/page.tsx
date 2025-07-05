@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import ProductCard from "@/components/product-card"
 import { supabase, type Product } from "@/lib/supabase"
 import { Card, CardContent } from "@/components/ui/card"
@@ -29,7 +29,7 @@ function ProductSkeleton() {
   )
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const searchParams = useSearchParams()
@@ -120,5 +120,13 @@ export default function ProductsPage() {
         ))}
       </div>
     </div>
+  )
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="container mx-auto px-4 py-16 text-center text-lg text-gray-500">Loading products...</div>}>
+      <ProductsContent />
+    </Suspense>
   )
 }
